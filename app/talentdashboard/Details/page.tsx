@@ -1,3 +1,4 @@
+
 "use client";
 import Details from "./Details";
 import React, { useState } from "react";
@@ -21,7 +22,9 @@ const Home = () => {
     <Details activePage={activePage} onNavigate={handleNavigation}>
       {activePage === "Dashboard" && <Homepage />}
       {activePage === "Challenges & Hackathons" && <Hackathon />}
-      {activePage === "Details" && <Details />}{" "}
+      {activePage === "Details" && <Details children={undefined} activePage={""} onNavigate={function (page: string): void {
+        throw new Error("Function not implemented.");
+      } } />}{" "}
       {/* You can add content here for "Details" */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </Details>

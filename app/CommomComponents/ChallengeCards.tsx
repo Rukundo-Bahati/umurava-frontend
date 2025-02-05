@@ -1,48 +1,52 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchChallenges } from "../../store/challengesSlice";
+import { RootState, AppDispatch } from "../../store/store";
 import ChallengeCard from "./ChallengeCard";
 import Link from "next/link";
 
-const challenges = [
-  {
-    description: "Design a Dashboard for SokoFund, a Fintech Product",
-    skills: ["UI/UX Design", "User Research"],
-    seniority: "Junior, Intermediate, Senior",
-    timeline: "15 Days",
-  },
-  {
-    description: "Redesign the Landing Page for a SaaS Product",
-    skills: ["UI/UX Design", "Wireframing", "Prototyping"],
-    seniority: "Junior, Intermediate",
-    timeline: "10 Days",
-  },
-  {
-    description: "Build a Mobile App UI for an E-commerce Platform",
-    skills: ["Figma", "User Research", "Interaction Design"],
-    seniority: "Intermediate, Senior",
-    timeline: "20 Days",
-  },
-  
-
-];
-
 const RecentChallenges: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { data: challenges, loading, error } = useSelector(
+    (state: RootState) => state.challenges
+  );
+
+  useEffect(() => {
+    dispatch(fetchChallenges());
+  }, [dispatch]);
+
+  if (loading) {
+    return <p className="text-center text-gray-600">Loading challenges...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-red-600">{error}</p>;
+  }
+
   return (
     <div className="p-8 bg-gray-50">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Recent Challenges</h1>
-        <Link
-          href="/challenges"
-          className="text-blue-600 hover:underline text-lg"
-        >
+        <Link href="/challenges" className="text-blue-600 hover:underline text-lg">
           See all
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {challenges.map((challenge, index) => (
-          <ChallengeCard key={index} {...challenge} />
-        ))}
+        {challenges.length > 0 ? (
+          challenges.map((challenge: any) => (
+            <ChallengeCard
+              key={challenge._id}
+              description={challenge.title}
+              skills={challenge.skills.split(", ")}
+              seniority={challenge.level}
+              timeline={challenge.timeline}
+            />
+          ))
+        ) : (
+          <p className="text-gray-600">No challenges available.</p>
+        )}
       </div>
     </div>
   );

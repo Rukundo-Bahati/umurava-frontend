@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "@/app/CommomComponents/Sidebar";
 import Header from "../../CommomComponents/Header";
-import Navigation from "./Navigation";
 import ProjectBrief from "../../CommomComponents/ProjectBrief";
-import Instructions from "./Instructions";
+import { FiMenu } from "react-icons/fi";
 
 interface DetailsProps {
   children: React.ReactNode;
@@ -18,22 +17,38 @@ const Details: React.FC<DetailsProps> = ({
   activePage,
   onNavigate,
 }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <div className="flex h-screen">
       <div className="flex h-full">
-        <div className="w-70 bg-[#2B71F0] text-white p-5 flex flex-col justify-between">
+        <div
+          className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 md:relative md:translate-x-0 ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
           <Sidebar activePage={activePage} onNavigate={onNavigate} />
         </div>
-        <div className="flex-1 flex flex-col">
-          <Header className="h-16 bg-blue-600 text-white px-4 flex items-center" />
-          <div className="flex-1 flex flex-col px-4 py-6 space-y-4">
-            <Navigation className="h-12 bg-gray-200 rounded-lg shadow-md px-4 flex items-center" />
-            <div className="flex flex-1">
-              <ProjectBrief className="flex-1 mr-4" />
-              {/* <Instructions className="w-1/4" /> */}
-            </div>
+
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        <div className="flex flex-col flex-1 overflow-scroll">
+          <Header />
+          <button
+            className="absolute top-4 left-4 md:hidden p-2 bg-gray-800 text-white rounded-full z-50"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            <FiMenu size={24} />
+          </button>
+          <div className="mt-[80px] px-6">
+            <ProjectBrief />
           </div>
         </div>
+        
       </div>
     </div>
   );

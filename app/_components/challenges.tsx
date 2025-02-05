@@ -9,9 +9,11 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ChallengePage() {
   const router = useRouter();
+  const { data, isLoading, isError} = useQuery({ queryKey: ["api/challenges"] })
 
   const challenges = [
     {
@@ -34,9 +36,20 @@ export default function ChallengePage() {
     },
   ];
 
+  if (isLoading){
+    // TODO: loading state
+    return null;
+  }
+
+  if (isError){
+    return null;
+  }
+
   const goToChallengesPage = () => {
     router.push("/challenges");
   };
+
+  console.log(data)
 
   return (
     <div className="container mx-auto px-4 py-12">

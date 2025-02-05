@@ -1,11 +1,11 @@
-"use client";
-
+"use client"
 import React, { useState } from "react";
 import Homepage from "./Homepage/Homepage";
 import Hackathon from "./Hackathon/Hackathon";
 import Details from "./Details/Details";
 import Modal from "./Community/Modal";
 import DashboardLayout from "../CommomComponents/DashboardLayout";
+import { useQuery } from "@tanstack/react-query";
 
 const TalentDashboard = () => {
   const [activePage, setActivePage] = useState("Dashboard");
@@ -19,11 +19,27 @@ const TalentDashboard = () => {
     }
   };
 
+
+  // const { data, isLoading, isError} = useQuery({ queryKey: ["api/challenges"] })
+
+
+  // if (isLoading){
+  //   // TODO: loading state
+  //   return null;
+  // }
+
+  // if (isError){
+  //   return null;
+  // }
+  // console.log(data)
+
   return (
     <DashboardLayout activePage={activePage} onNavigate={handleNavigation}>
       {activePage === "Dashboard" && <Homepage />}
       {activePage === "Challenges & Hackathons" && <Hackathon />}
-      {activePage === "Details" && <Details />}
+      {activePage === "Community" && <Details children={undefined} activePage={""} onNavigate={function (page: string): void {
+        throw new Error("Function not implemented.");
+      } } />}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </DashboardLayout>
   );

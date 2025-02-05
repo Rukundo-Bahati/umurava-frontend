@@ -1,12 +1,12 @@
 import React from "react";
 import { MoveLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 interface NavigationBarProps {
   onGoBack: () => void;
   title: string;
   actionText: string;
   onActionClick: () => void;
+  className?: string; // Add className prop
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({
@@ -14,19 +14,11 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   title,
   actionText,
   onActionClick,
+  className,
 }) => {
-  const router = useRouter();
-
-  const goToChallenges = () => {
-    router.push("/talentdashboard");
-  };
-
   return (
-    <div className="flex items-center justify-between p-4">
-      <MoveLeft
-        className="cursor-pointer"
-        onClick={goToChallenges} // Trigger onGoBack on click
-      />
+    <div className={`flex items-center justify-between p-4 ${className}`}>
+      <MoveLeft className="cursor-pointer" onClick={onGoBack} />
       <div className="flex-1 text-center">{title}</div>
       <button className="text-blue-500" onClick={onActionClick}>
         {actionText}

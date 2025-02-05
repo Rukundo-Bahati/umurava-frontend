@@ -7,7 +7,6 @@ import RecentChallenges from "../../CommomComponents/ChallengeCards";
 const Homepage = () => {
   return (
     <div className="bg-gray-50">
-      <Header />
       <div>
         <Welcome />
         <Cards />

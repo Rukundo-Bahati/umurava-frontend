@@ -3,8 +3,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-// import logo from "../../../../public/images/logo.png";
-import Link from "next/link";
 
 interface ChallengeCardProps {
   description: string;
@@ -25,9 +23,10 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-[420px] bg-white mx-4 flex flex-col justify-between">
+    <div className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-[420px] sm:max-w-[500px] lg:max-w-[600px] bg-white mx-auto md:mx-6 flex flex-col justify-between">
       <div>
-        <div className="relative bg-[#2B71F0] w-full h-64 mb-5 rounded-t-lg flex flex-col justify-center items-center">
+        {/* Header */}
+        <div className="relative bg-[#2B71F0] w-full h-64 mb-5 rounded-t-lg flex flex-col justify-center items-center text-center">
           <div className="flex items-center gap-3">
             <Image
               src="/images/logo2.png"
@@ -41,12 +40,17 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             Open
           </div>
         </div>
-        <p className="text-gray-700 text-lg font-bold mb-5">{description}</p>
-        <div className="mb-5">
-          <h3 className="text-base font-medium text-gray-600 mb-3">
+
+        <p className="text-gray-700 text-lg font-bold mb-4 text-center md:text-left">
+          {description}
+        </p>
+
+        {/* Skills */}
+        <div className="mb-4">
+          <h3 className="text-base font-medium text-gray-600 mb-3 text-center md:text-left">
             Skills Needed:
           </h3>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-4">
             {skills.map((skill, index) => (
               <div
                 key={index}
@@ -57,7 +61,9 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             ))}
           </div>
         </div>
-        <div className="mb-5">
+
+        {/* Seniority & Timeline */}
+        <div className="mb-4 text-center md:text-left">
           <p className="text-base text-gray-600">
             <strong>Seniority Level:</strong> {seniority}
           </p>
@@ -66,9 +72,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
           </p>
         </div>
       </div>
-      <div className="mt-5 border-t border-gray-300 pt-3">
+
+      {/* Button */}
+      <div className="mt-5 border-t border-gray-300 pt-3 text-center md:text-left">
         <button
-          className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+          className="bg-blue-600 text-white py-2 px-4 w-full md:w-auto rounded-lg hover:bg-blue-700 transition text-sm font-medium"
           onClick={handleViewChallenge}
         >
           View Challenge
