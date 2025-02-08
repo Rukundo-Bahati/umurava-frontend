@@ -1,12 +1,14 @@
 "use client";
-import { useRouter } from "next/navigation";
+
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, JSX } from "react";
+import { useState, type JSX } from "react";
 
 const Header = (): JSX.Element => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname(); // Get current page
 
   const NavigateToJoin = () => {
     router.push("/join");
@@ -16,6 +18,10 @@ const Header = (): JSX.Element => {
     setIsMenuOpen((prevState) => !prevState);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Challenge & Hackathons", href: "/challenges" },
@@ -23,113 +29,75 @@ const Header = (): JSX.Element => {
     { name: "About Us", href: "/about" },
     { name: "Contact Us", href: "/contact" },
   ];
+
   return (
-    <header className="flex items-center justify-between px-6 py-4 sm:px-10  w-full z-50">
-      {/* Logo */}
-      <Link href="/" className="flex items-center">
-        <Image
-          src="/images/logo.png"
-          alt="logo"
-          width={144}
-          height={144}
-          className="w-36 sm:w-40"
-        />
-      </Link>
+    <header className="flex py-4 px-4 sm:px-10 font-[sans-serif] min-h-[70px] tracking-wide relative z-50 bg-white">
+      <div className="flex flex-wrap items-center justify-between gap-5 w-full">
+        {/* Logo */}
+        <Link href="/" className="max-sm:hidden">
+          <div className="w-36 ml-20">
+            <Image src="/images/logo.png" alt="logo" width={144} height={144} />
+          </div>
+        </Link>
 
-      {/* Desktop Navigation */}
-      <nav className="hidden lg:flex space-x-6">
-        {[
-          { name: "Home", href: "/" },
-          { name: "Challenge & Hackathons", href: "/challenges" },
-          { name: "For Educational Institutions", href: "/institutions" },
-          { name: "About Us", href: "/about" },
-          { name: "Contact Us", href: "/contact" },
-        ].map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className={`text-gray-600 hover:text-[#2B71F0] transition-all text-lg font-medium ${
-              item.name === "Home" ? "text-[#2B71F0]" : "text-gray-500"
-            } block font-light text-[15px]`}
-          >
-            {item.name}
-          </Link>
-        ))}
-      </nav>
+        <Link href="/" className="hidden max-sm:block">
+          <div className="w-9 ml-32">
+            <Image src="/images/logo.png" alt="logo" width={36} height={36} />
+          </div>
+        </Link>
 
-      {/* Buttons */}
-      <div className="flex items-center space-x-4">
-        <button
-          className="px-4 py-2 text-lg rounded-md font-bold text-white border-2 border-[#041738] bg-[#041738] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff]"
-          onClick={NavigateToJoin}
+        {/* Mobile Menu */}
+        <div
+          className={`fixed top-0 left-0 w-2/3 h-full bg-white z-50 transform ${
+            isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 lg:static lg:w-auto lg:bg-transparent lg:translate-x-0`}
         >
-          Join the Program
-        </button>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="lg:hidden"
-          onClick={toggleMenu}
-          aria-label="Toggle Menu"
-        >
-          <svg
-            className="w-7 h-7"
-            fill="#000"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-              clipRule="evenodd"
-            ></path>
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-50 transform ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        } transition-transform duration-300 lg:hidden`}
-      >
-        <div className="bg-white w-2/3 sm:w-1/2 h-full shadow-md p-6">
           {/* Close Button */}
           <button
-            className="absolute top-4 right-4 text-gray-600"
-            onClick={toggleMenu}
-            aria-label="Close Menu"
+            className="lg:hidden absolute top-4 right-4 text-gray-700 text-2xl"
+            onClick={closeMenu}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              viewBox="0 0 320.591 320.591"
-            >
-              <path d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"></path>
-              <path d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"></path>
-            </svg>
+            ✖ {/* Close Icon */}
           </button>
 
-          {/* Mobile Menu Links */}
-          <ul className="mt-10 space-y-6">
-            {[
-              { name: "Home", href: "/" },
-              { name: "Challenge & Hackathons", href: "/challenges" },
-              { name: "For Educational Institutions", href: "/institutions" },
-              { name: "About Us", href: "/about" },
-              { name: "Contact Us", href: "/contact" },
-            ].map((item) => (
-              <li key={item.name}>
+          <ul className="flex flex-col lg:flex-row gap-5 p-6 lg:p-0">
+            {navItems.map((item) => (
+              <li
+                key={item.name}
+                className="max-lg:border-b border-gray-300 py-3"
+              >
                 <Link
                   href={item.href}
-                  className="block text-gray-700 text-lg font-medium hover:text-[#007bff] transition"
-                  onClick={toggleMenu} // Close menu on click
+                  className={`block font-light text-[15px] px-3 py-2 ${
+                    pathname === item.href
+                      ? "text-[#007bff] font-bold"
+                      : "text-gray-500 hover:text-[#007bff]"
+                  }`}
+                  onClick={closeMenu} // Close menu when a link is clicked
                 >
                   {item.name}
                 </Link>
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* Join Button & Menu Toggle */}
+        <div className="flex max-lg:ml-auto space-x-4">
+          <button
+            className="px-4 py-2 text-sm rounded-md font-bold text-white border-2 border-[#041738] bg-[#041738] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff]"
+            onClick={NavigateToJoin}
+          >
+            Join the Program
+          </button>
+
+          {/* Menu Bars (☰) Button */}
+          <button
+            className="lg:hidden text-2xl text-gray-700"
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? "✖" : "☰"} {/* Toggles between ☰ and ✖ */}
+          </button>
         </div>
       </div>
     </header>

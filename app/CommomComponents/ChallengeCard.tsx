@@ -9,6 +9,7 @@ interface ChallengeCardProps {
   skills: string[];
   seniority: string;
   timeline: string;
+  viewChallengeUrl?: string;
 }
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({
@@ -16,11 +17,15 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
   skills,
   seniority,
   timeline,
+  viewChallengeUrl = "/talentdashboard/Details",
 }) => {
   const router = useRouter();
+
   const handleViewChallenge = () => {
-    router.push("/talentdashboard/Details");
+    router.push(viewChallengeUrl);
   };
+
+    // router.push("/talentdashboard/Details");
 
   return (
     <div className="border border-gray-200 rounded-lg shadow-lg p-6 w-full max-w-[420px] sm:max-w-[500px] lg:max-w-[600px] bg-white mx-auto md:mx-6 flex flex-col justify-between">
@@ -51,7 +56,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             Skills Needed:
           </h3>
           <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-4">
-            {skills.map((skill, index) => (
+            {(Array.isArray(skills) ? skills : []).map((skill, index) => (
               <div
                 key={index}
                 className="text-sm text-blue-700 border border-blue-700 px-3 py-1 rounded"

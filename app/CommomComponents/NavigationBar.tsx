@@ -17,9 +17,10 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   onActionClick,
 }) => {
   return (
-    <nav className="fixed top-[4rem] left-[290px] right-0 bg-white border-b px-6 py-3 
-    flex items-center justify-between z-50 shadow-sm">
+    <nav className="fixed top-16 mb-3 w-full bg-white border-b px-8 py-5 
+    flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-3">
+        
         {/* Go Back Button */}
         <button
           onClick={onGoBack}

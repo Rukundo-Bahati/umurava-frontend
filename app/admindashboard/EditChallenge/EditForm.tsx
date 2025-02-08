@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface FormData {
   title: string;
@@ -13,27 +14,43 @@ interface FormData {
 }
 
 const EditForm: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const challengeId = searchParams.get("id"); // Extract challenge ID from URL query params
+
   const [formData, setFormData] = useState<FormData>({
-    title: "Design a Dashboard for Sokofund",
-    deadline: "24/12/2024",
-    duration: "7 days",
-    prize: "$150",
-    contactEmail: "talent@umurava.africa",
-    brief:
-      "A Fintech company that is developing a Digital Financial Platform designed for businesses and their workforce in Africa is partnering with Umurava to run a Skills Challenge for Product Design. This Fintech Company offers Payroll Management System to Employers and Embedded Financial services and products to Employees and Gig Workers across Africa.",
-    description: `User Interface Design for each step
-  Creating wireframes to outline the basic structure and layout of the web and mobile app.
-  Designing visually appealing and user-friendly interfaces for the web and mobile apps focusing on usability and user experience.
-  Ensuring the web application works seamlessly across web, mobile, and tablet devices.
-  Provide a feedback session for in-development guidance.`,
-    requirements: `UX research to understand Project Requirements
-  Understanding User Needs
-  Understanding Business Goals
-  Determine interaction between users
-  Requirements Catalog.`,
-    deliverables:
-      "The Product Designer will provide all documents and deliverables to the client before the review meetings.",
+    title: "",
+    deadline: "",
+    duration: "",
+    prize: "",
+    contactEmail: "",
+    brief: "",
+    description: "",
+    requirements: "",
+    deliverables: "",
   });
+
+  useEffect(() => {
+    if (!challengeId) return;
+
+    const fetchChallenge = async () => {
+      try {
+        const response = await fetch(`/api/challenges/${challengeId}`);
+        if (!response.ok) throw new Error("Failed to fetch challenge data");
+
+        const data = await response.json();
+        setFormData(data);
+      } catch (error) {
+        console.error("Error fetching challenge:", error);
+      }
+    };
+
+    fetchChallenge();
+  }, [challengeId]);
+
+  const handleUpdate = () => {
+    router.push("/admindashboard/AdminDetails/admindetails");
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -41,9 +58,23 @@ const EditForm: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
+
+    try {
+      const response = await fetch(`/api/challenges/${challengeId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error("Failed to update challenge");
+
+      alert("Challenge updated successfully!");
+      handleUpdate();
+    } catch (error) {
+      console.error("Error updating challenge:", error);
+    }
   };
 
   return (
@@ -59,18 +90,11 @@ const EditForm: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <label
-          className="block text-gray-700 font-semibold mb-2"
-          htmlFor="title"
-        >
-          Challenge/Hackathon Title
-        </label>
+        <label className="block text-gray-700 font-semibold mb-2">Title</label>
         <input
-          className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          id="title"
           type="text"
           name="title"
-          placeholder="Enter Title"
+          className="border border-gray-300 rounded-lg w-full py-3 px-4"
           value={formData.title}
           onChange={handleChange}
         />
@@ -78,36 +102,26 @@ const EditForm: React.FC = () => {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         <div>
-          <label
-            className="block text-gray-700 font-semibold mb-2"
-            htmlFor="deadline"
-          >
+          <label className="block text-gray-700 font-semibold mb-2">
             Deadline
           </label>
           <input
-            className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="deadline"
             type="text"
             name="deadline"
-            placeholder="Date"
+            className="border border-gray-300 rounded-lg w-full py-3 px-4"
             value={formData.deadline}
             onChange={handleChange}
           />
         </div>
 
         <div>
-          <label
-            className="block text-gray-700 font-semibold mb-2"
-            htmlFor="duration"
-          >
+          <label className="block text-gray-700 font-semibold mb-2">
             Duration
           </label>
           <input
-            className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="duration"
             type="text"
             name="duration"
-            placeholder="Duration"
+            className="border border-gray-300 rounded-lg w-full py-3 px-4"
             value={formData.duration}
             onChange={handleChange}
           />
@@ -116,36 +130,24 @@ const EditForm: React.FC = () => {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         <div>
-          <label
-            className="block text-gray-700 font-semibold mb-2"
-            htmlFor="prize"
-          >
-            Money Prize
-          </label>
+          <label className="block text-gray-700 font-semibold mb-2">Prize</label>
           <input
-            className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="prize"
             type="text"
             name="prize"
-            placeholder="Prize"
+            className="border border-gray-300 rounded-lg w-full py-3 px-4"
             value={formData.prize}
             onChange={handleChange}
           />
         </div>
 
         <div>
-          <label
-            className="block text-gray-700 font-semibold mb-2"
-            htmlFor="contactEmail"
-          >
+          <label className="block text-gray-700 font-semibold mb-2">
             Contact Email
           </label>
           <input
-            className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="contactEmail"
             type="email"
             name="contactEmail"
-            placeholder="Email"
+            className="border border-gray-300 rounded-lg w-full py-3 px-4"
             value={formData.contactEmail}
             onChange={handleChange}
           />
@@ -153,87 +155,53 @@ const EditForm: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <label
-          className="block text-gray-700 font-semibold mb-2"
-          htmlFor="brief"
-        >
-          Project Brief
-        </label>
+        <label className="block text-gray-700 font-semibold mb-2">Brief</label>
         <textarea
-          className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          id="brief"
           name="brief"
-          placeholder="Enter text here ..."
+          className="border border-gray-300 rounded-lg w-full py-3 px-4"
           value={formData.brief}
           onChange={handleChange}
           rows={2}
         />
-        <p className="text-gray-600 text-xs mt-2">
-        Keep this simple of 50 character
-        </p>
       </div>
 
       <div className="mb-6">
-        <label
-          className="block text-gray-700 font-semibold mb-2"
-          htmlFor="description"
-        >
-          Project Descriptionription
+        <label className="block text-gray-700 font-semibold mb-2">
+          Description
         </label>
         <textarea
-          className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          id="description"
           name="description"
-          placeholder="Enter text here ..."
+          className="border border-gray-300 rounded-lg w-full py-3 px-4"
           value={formData.description}
           onChange={handleChange}
           rows={5}
         />
-        <p className="text-gray-600 text-xs mt-2">
-        Keep this simple of 250 character
-        </p>
       </div>
 
       <div className="mb-6">
-        <label
-          className="block text-gray-700 font-semibold mb-2"
-          htmlFor="requirements"
-        >
+        <label className="block text-gray-700 font-semibold mb-2">
           Requirements
         </label>
         <textarea
-          className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          id="requirements"
           name="requirements"
-          placeholder="Enter text here ..."
+          className="border border-gray-300 rounded-lg w-full py-3 px-4"
           value={formData.requirements}
           onChange={handleChange}
           rows={4}
         />
-        <p className="text-gray-600 text-xs mt-2">
-        Keep this simple of 500 character
-        </p>
       </div>
 
       <div className="mb-6">
-        <label
-          className="block text-gray-700 font-semibold mb-2"
-          htmlFor="deliverables"
-        >
+        <label className="block text-gray-700 font-semibold mb-2">
           Deliverables
         </label>
         <textarea
-          className="appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          id="deliverables"
           name="deliverables"
-          placeholder="Enter text here ..."
+          className="border border-gray-300 rounded-lg w-full py-3 px-4"
           value={formData.deliverables}
           onChange={handleChange}
           rows={4}
         />
-        <p className="text-gray-600 text-xs mt-2">
-        Keep this simple of 500 character
-        </p>
       </div>
 
       <div className="flex items-center justify-between">
@@ -244,8 +212,8 @@ const EditForm: React.FC = () => {
           Cancel
         </button>
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
         >
           Update Challenge
         </button>

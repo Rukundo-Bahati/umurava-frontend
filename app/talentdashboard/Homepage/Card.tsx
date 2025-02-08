@@ -8,7 +8,7 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ title, number }) => {
   return (
-    <div className="relative flex flex-col bg-white rounded-lg border shadow-md hover:shadow-xl transition-shadow duration-200 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-4 md:p-6">
+    <div className="relative flex h-auto flex-col bg-white rounded-lg border shadow-md hover:shadow-xl transition-shadow duration-200 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-4 md:p-6">
       {/* Left Border Indicator */}
       <div className="absolute left-0 top-2 bottom-2 bg-blue-600 w-2 rounded"></div>
 

@@ -19,20 +19,6 @@ const TalentDashboard = () => {
     }
   };
 
-
-  // const { data, isLoading, isError} = useQuery({ queryKey: ["api/challenges"] })
-
-
-  // if (isLoading){
-  //   // TODO: loading state
-  //   return null;
-  // }
-
-  // if (isError){
-  //   return null;
-  // }
-  // console.log(data)
-
   return (
     <DashboardLayout activePage={activePage} onNavigate={handleNavigation}>
       {activePage === "Dashboard" && <Homepage />}

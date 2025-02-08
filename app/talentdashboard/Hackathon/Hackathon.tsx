@@ -9,7 +9,7 @@ const Hackathon = () => {
       <div className="flex-1">
         <Header />
         <ChallengesFilter />
-        <ChallengesGrid />
+        <ChallengesGrid viewChallengeUrl={""} />
       </div>
     </div>
   );

@@ -1,59 +1,78 @@
-import React from "react";
-import { House, FileCheck, UserRoundPlus, Plus } from "lucide-react";
+"use client";
 
-interface ChallengeProps {
-  title: string;
-  count: number;
-  isActive?: boolean;
-}
-
-const Challenge: React.FC<ChallengeProps> = ({
-  title,
-  count,
-  isActive = false,
-}) => {
-  return (
-    <div
-      className={`flex items-center gap-3 p-4 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer border border-gray-300 w-72 ${
-        isActive ? "bg-blue-100" : ""
-      }`}
-    >
-      {title === "All Challenge" ? (
-        <House className="text-xl" />
-      ) : title === "Completed Challenge" ? (
-        <FileCheck className="text-xl" />
-      ) : title === "Open Challenge" ? (
-        <FileCheck className="text-xl" />
-      ) : (
-        <UserRoundPlus className="text-xl" />
-      )}
-      <span>{title}</span>
-      <span className="ml-auto text-sm font-bold">{count}</span>
-    </div>
-  );
-};
+import React, { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { fetchChallenges } from "@/store/challengesSlice";
 
 const IntroStats: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { challenges, loading, error } = useSelector(
+    (state: RootState) => state.challenges
+  );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!challenges || challenges.length === 0) {
+      dispatch(fetchChallenges());
+    }
+  }, [dispatch, challenges]);
+
+  const validChallenges = Array.isArray(challenges) ? challenges : [];
+
+  const counts = {
+    all: validChallenges.length,
+    open: validChallenges.filter((challenge) => challenge.status?.toLowerCase() === "open").length,
+    completed: validChallenges.filter((challenge) => challenge.status?.toLowerCase() === "completed").length,
+    ongoing: validChallenges.filter((challenge) => challenge.status?.toLowerCase() === "ongoing").length,
+  };
+
+  const filters = [
+    { label: "All Challenges", count: counts.all },
+    { label: "Completed Challenges", count: counts.completed },
+    { label: "Open Challenges", count: counts.open },
+    { label: "Ongoing Challenges", count: counts.ongoing },
+  ];
+
+  const navigateToCreateChallenge = () => {
+    router.push("/admindashboard/CreateChallenge");
+  };
+
   return (
-    <div className="flex flex-col space-y-6">
-      <div className="text-left">
-        <h2 className="text-3xl font-extrabold text-gray-800 mb-2">Challenges</h2>
-        <p className="text-lg text-gray-600">
-          Join a challenge or a hackathon to gain valuable work experience.
-        </p>
-      </div>
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-6 md:space-y-0">
-        <div className="flex flex-wrap gap-6">
-          <Challenge title="All Challenge" count={0} isActive />
-          <Challenge title="Completed Challenge" count={0} />
-          <Challenge title="Open Challenge" count={0} />
-          <Challenge title="Ongoing Challenge" count={0} />
+    <div className="mt-16 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <h1 className="text-xl font-bold text-gray-900 mb-2">Challenges</h1>
+      <p className="text-sm text-gray-600 mb-4">
+        Join a challenge or a hackathon to gain valuable work experience.
+      </p>
+
+      {loading ? (
+        <p className="text-center text-gray-600">Loading...</p>
+      ) : error ? (
+        <p className="text-center text-red-600">Error: {error}</p>
+      ) : (
+        <div className="flex gap-4">
+          {filters.map((filter, index) => (
+            <button
+              key={index}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-blue-100 transition"
+            >
+              {filter.label}
+              <span className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-full">
+                {filter.count}
+              </span>
+            </button>
+          ))}
+          <div onClick={navigateToCreateChallenge}>
+            <Button className="bg-blue-600 hover:bg-blue-800 text-lg py-4 px-6 h-16 duration-250">
+              <Plus className="w-10 h-10 mr-3" />
+              Create New Challenge
+            </Button>
+          </div>
         </div>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded flex items-center gap-2">
-          Create New Challenge
-          <Plus className="text-xl" />
-        </button>
-      </div>
+      )}
     </div>
   );
 };

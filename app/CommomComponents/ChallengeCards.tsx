@@ -9,8 +9,9 @@ import Link from "next/link";
 
 const RecentChallenges: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: challenges, loading, error } = useSelector(
-    (state: RootState) => state.challenges
+
+  const { challenges = [], loading, error } = useSelector(
+    (state: RootState) => state.challenges 
   );
 
   useEffect(() => {
@@ -25,6 +26,10 @@ const RecentChallenges: React.FC = () => {
     return <p className="text-center text-red-600">{error}</p>;
   }
 
+  if (!challenges || challenges.length === 0) {
+    return <p className="text-center text-gray-600">No challenges found.</p>;
+  }
+
   return (
     <div className="p-8 bg-gray-50">
       <div className="flex justify-between items-center mb-6">
@@ -35,11 +40,11 @@ const RecentChallenges: React.FC = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {challenges.length > 0 ? (
-          challenges.map((challenge: any) => (
+          challenges.map((challenge) => (
             <ChallengeCard
               key={challenge._id}
               description={challenge.title}
-              skills={challenge.skills.split(", ")}
+              skills={challenge.skills && typeof challenge.skills === "string" ? challenge.skills.split(",") : []}
               seniority={challenge.level}
               timeline={challenge.timeline}
             />
